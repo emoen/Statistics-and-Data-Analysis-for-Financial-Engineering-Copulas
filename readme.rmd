@@ -1,19 +1,51 @@
 ---
 title: "Statatistics and Data Analysis for Financial Engineering - Chapter 8 Copulas"
-output: github_document
+output:
+  github_document:
+    pandoc_args: --webtex
+always_allow_html: yes
+
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Archimedean Copulas
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Archimedean copula with generator function:
+\newcommand*{\indep}{\perp \!\!\! \perp}
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+$$
+C(u_1,..,u_d) = \phi^{-1}(\phi(u_1)+..+\phi(u_d))
+$$
+#### Frank copula
 
-### Plot of generator function for frank cupola
+Generator function:
+$$
+C(u|\theta) = -ln(\frac{e^{-\theta u} -1)}{e^{-\theta} -1)}), -\infty < \theta < \infty
+$$
+
+#### Crayton copula
+
+Generator function:
+$$
+C(u|\theta) = \frac{1}{\theta}(u^{-\theta}-1), \theta > 0
+$$
+#### Gumbel Copula adsfads
+
+Generator function:
+$$
+C(u|\theta) = -ln(u)^{\theta}, \theta \geq 1
+$$
+#### Joe copula
+
+Generator function:
+$$
+C(u|\theta) = -ln(1-(1-\theta)^{\theta}), \theta \geq 1
+$$
+
+### Plot of generator function for Frank cupola
 
 ```{r Frank Copula generator function}
 library(copula)
@@ -24,12 +56,31 @@ abline(h=0)
 abline(v=0)
 ```
 
-## Including Plots
+### Scatter plot of 9 bivariate Frank copulas
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r Scatterplot of 9 frank copulas}
+set.seed(5640)
+theta = c(-100, -50, -10, -1, 0, 5, 20, 50, 500)
+par(mfrow=c(3,3), cex.axis=1.2, cex.lab=1.2, cex.main=1.2)
+for(i in 1:9){
+  U= rCopula(n=200, copula=archmCopula(family="frank", param=theta[i]))
+  plot(U, xlab=expression(u[1]), ylab=expression(u[2]), 
+                          main=eval(substitute(expression(paste(theta, " = ", j)),
+                         list(j = as.character(theta[i])))))
+}
 ```
+\center Figure 2: Bivariate random samples of size 200 from various Frank copulas. \center
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Scatter plot of 9 bivariate Clayton copulas
+```{r Scatterplot of 9 clayton copulas}
+set.seed(5640)
+theta = c(-0.98, -0.7, -0.3, -0.1, 0.1, 1, 5, 15, 100)
+par(mfrow=c(3,3), cex.axis=1.2, cex.lab=1.2, cex.main=1.2)
+for(i in 1:9){
+  U= rCopula(n=200, copula=archmCopula(family="clayton", param=theta[i]))
+  plot(U, xlab=expression(u[1]), ylab=expression(u[2]), 
+                          main=eval(substitute(expression(paste(theta, " = ", j)),
+                         list(j = as.character(theta[i])))))
+}
+```
+\center Figure 2: Bivariate random samples of size 200 from various clayton copulas. \center

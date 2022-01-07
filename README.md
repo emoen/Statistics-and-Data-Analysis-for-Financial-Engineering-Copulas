@@ -2,6 +2,9 @@ Statatistics and Data Analysis for Financial Engineering - Chapter 8
 Copulas
 ================
 
+data and code from the book can be found here:
+<https://people.orie.cornell.edu/davidr/SDAFE2/>
+
 ## Archimedean Copulas
 
 Archimedean copula with generator function:
@@ -87,18 +90,210 @@ copulas.
 
 ### Scatter plot of 9 bivariate Clayton copulas
 
+![](readme_files/figure-gfm/Scatterplot%20of%209%20clayton%20copulas-1.png)<!-- -->
+Figure 3: Bivariate random samples of size 200 from various clayton
+copulas.
+
+### Scatter plot of 6 bivariate Gumbel copulas
+
+![](readme_files/figure-gfm/Scatterplot%20of%209%20gumbel%20copulas-1.png)<!-- -->
+Figure 4: Bivariate random samples of size 200 from various gumbel
+copulas.
+
+### Scatter plot of 6 bivariate Joe copulas
+
+![](readme_files/figure-gfm/Scatterplot%20of%209%20joe%20copulas-1.png)<!-- -->
+Figure 4: Bivariate random samples of size 200 from various joe copulas.
+
+## Rank correlation: 1. Kendall’s Tau, 2. Spearman’s rank correlation coefficient
+
+## Tail dependence
+
 ``` r
-set.seed(5640)
-theta = c(-0.98, -0.7, -0.3, -0.1, 0.1, 1, 5, 15, 100)
-par(mfrow=c(3,3), cex.axis=1.2, cex.lab=1.2, cex.main=1.2)
-for(i in 1:9){
-  U= rCopula(n=200, copula=archmCopula(family="clayton", param=theta[i]))
-  plot(U, xlab=expression(u[1]), ylab=expression(u[2]), 
-                          main=eval(substitute(expression(paste(theta, " = ", j)),
-                         list(j = as.character(theta[i])))))
-}
+rho = seq(-1, 1, by=0.01)
+df = c(1,4,25, 240)
+x1 = -sqrt((df[1]+1)*(1-rho)/(1+rho))
+lambda1 = 2*pt(x1, df[1]+1)
+x4 = -sqrt((df[2]+1)*(1-rho)/(1+rho))
+lambda4 = 2*pt(x4, df[2]+1)
+x25 = -sqrt((df[3]+1)*(1-rho)/(1+rho))
+lambda25 = 2*pt(x25, df[3]+1)
+x250 = -sqrt((df[4]+1)*(1-rho)/(1+rho))
+lambda250 = 2*pt(x250, df[4]+1)
+par(mfrow=c(1,1), lwd=2, cex.axis=1.2, cex.lab=1.2)
+plot(rho, lambda1, type="l", lty=1, xlab=expression(rho), ylab=expression(lambda[l]==lambda[u]))
+lines(rho, lambda4, lty=2)
+lines(rho, lambda25, lty=2)
+lines(rho, lambda250, lty=2)
+legend("topleft", c( expression(nu==1), expression(nu=4), expression(nu==25), expression(nu=250) ), lty=1:4)
 ```
 
-![](readme_files/figure-gfm/Scatterplot%20of%209%20clayton%20copulas-1.png)<!-- -->
-Figure 2: Bivariate random samples of size 200 from various clayton
-copulas.
+![](readme_files/figure-gfm/Scatterplot-1.png)<!-- -->
+
+## Example: flows in pipeline
+
+``` r
+library(copula)
+library(sn)
+```
+
+    ## Loading required package: stats4
+
+    ## 
+    ## Attaching package: 'sn'
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     sd
+
+``` r
+dat = read.csv("datasets/FlowData.csv")
+dat = dat/10000
+n = nrow(dat)
+x1 = dat$Flow1
+fit1 = st.mple(matrix(1,n,1), y=x1, dp=c(mean(x1), sd(x1),0,10))
+est1 = fit1$dp
+u1 = pst(x1, dp=est1)
+x2 = dat$Flow2
+fit2 = st.mple(matrix(1,n,1), y=x2, dp=c(mean(x2), sd(x2),0,10))
+est2 = fit2$dp
+u2 = pst(x2, dp=est2)
+U.hat = cbind(u1,u2)
+z1 = qnorm(u1)
+z2 = qnorm(u2)
+Z.hat = cbind(z1,z2)
+```
+
+``` r
+library(ks) 
+```
+
+    ## 
+    ## Attaching package: 'ks'
+
+    ## The following object is masked from 'package:sn':
+    ## 
+    ##     vech
+
+``` r
+fhatU = kde(x=U.hat, H=Hscv(x=U.hat))
+par(mfrow=c(2,2), cex.axis=1.2, cex.lab=1.2, cex.max=1.2)
+```
+
+    ## Warning in par(mfrow = c(2, 2), cex.axis = 1.2, cex.lab = 1.2, cex.max = 1.2):
+    ## "cex.max" is not a graphical parameter
+
+``` r
+hist(u1, main="(a)", xlab=expression(hat(U)[1]), freq=FALSE)
+hist(u1, main="(b)", xlab=expression(hat(U)[2]), freq=FALSE)
+plot(u1, u2, main="(c)", xlab = expression(hat(U)[1]), ylab = expression(hat(U)[2]), mgp = c(2.5, 1, 0))
+plot(fhatU, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 80, 10), 
+     main="(d)", xlab=expression(hat(U)[1]), ylab=expression(hat(U)[2]), mgp = c(2.5, 1, 0)) 
+```
+
+![](readme_files/figure-gfm/example%20plot-1.png)<!-- --> Figure 6:
+Pipeline data. Density histograms (a), and (b) and a scatterplot (c) of
+the uniform-transformed flows. The empirical copula C.hat, is the
+empirical CDF of the data in (c). Contours (d) from an estimated copula
+density c.hat via a two-dimensional KDE of (c)
+
+``` r
+fhatZ = kde(x=Z.hat, H=Hscv(x=Z.hat))
+
+pdf("norm_flows_hist_plot.pdf", width=7, height=7)
+#
+par(mfrow=c(2,2), cex.axis=1.2, cex.lab=1.2, cex.main=1.2)
+qqnorm(z1, datax=T, main="(a)") ; qqline(z1)
+qqnorm(z2, datax=T, main="(b)") ; qqline(z2)
+plot(z1, z2, main="(c)", xlab = expression(hat(Z)[1]), ylab = expression(hat(Z)[2]), mgp = c(2.5, 1, 0))
+plot(fhatZ, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 90, 10), 
+     main="(d)", xlab=expression(hat(Z)[1]), ylab=expression(hat(Z)[2]), mgp = c(2.5, 1, 0)) 
+```
+
+Figure 7: Pipleine date. Normal quantile plots (a) and (b), a
+scatterplot (c) and KDE density countours from the normal-transformed
+flows.
+
+``` r
+options(digits=3)
+cor.test(u1, u2, method="spearman")
+```
+
+    ## Warning in cor.test.default(u1, u2, method = "spearman"): Cannot compute exact
+    ## p-value with ties
+
+    ## 
+    ##  Spearman's rank correlation rho
+    ## 
+    ## data:  u1 and u2
+    ## S = 9e+06, p-value = 1e-11
+    ## alternative hypothesis: true rho is not equal to 0
+    ## sample estimates:
+    ##    rho 
+    ## -0.357
+
+``` r
+cor.test(u1, u2, method="kendall")
+```
+
+    ## 
+    ##  Kendall's rank correlation tau
+    ## 
+    ## data:  u1 and u2
+    ## z = -7, p-value = 3e-11
+    ## alternative hypothesis: true tau is not equal to 0
+    ## sample estimates:
+    ##    tau 
+    ## -0.242
+
+``` r
+sin(-0.242*pi/2)
+```
+
+    ## [1] -0.371
+
+``` r
+cor.test(u1, u2, method="pearson")
+```
+
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  u1 and u2
+    ## t = -7, df = 340, p-value = 8e-12
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.448 -0.263
+    ## sample estimates:
+    ##    cor 
+    ## -0.359
+
+``` r
+cor.test(z1, z2, method="pearson")
+```
+
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  z1 and z2
+    ## t = -7, df = 340, p-value = 2e-10
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.426 -0.238
+    ## sample estimates:
+    ##    cor 
+    ## -0.335
+
+Table 1: Estimates of copula parameters, maximized log-likelihood, and
+AIC using the uniform-transfomred pipline flow data.
+
+``` r
+omega = -0.371
+
+options(digits=4)
+
+Ct = fitCopula(copula=tCopula(dim = 2), data=U.hat, method="ml", start=c(omega, 10)) 
+Ct@estimate
+```
+
+    ## [1] -0.3401 22.4414

@@ -130,6 +130,12 @@ legend("topleft", c( expression(nu==1), expression(nu=4), expression(nu==25), ex
 
 ![](readme_files/figure-gfm/Scatterplot-1.png)<!-- -->
 
+``` r
+getwd()
+```
+
+    ## [1] "C:/prosjekt/Statistics-and-Data-Analysis-for-Financial-Engineering-Copulas"
+
 ## Example: flows in pipeline
 
 ``` r
@@ -152,8 +158,8 @@ dat = dat/10000
 n = nrow(dat)
 x1 = dat$Flow1
 fit1 = st.mple(matrix(1,n,1), y=x1, dp=c(mean(x1), sd(x1),0,10))
-est1 = fit1$dp
-u1 = pst(x1, dp=est1)
+est1 = fit1$dp              #vector or list of estimated DP parameters
+u1 = pst(x1, dp=est1)       # vector of probabililities - skew-t
 x2 = dat$Flow2
 fit2 = st.mple(matrix(1,n,1), y=x2, dp=c(mean(x2), sd(x2),0,10))
 est2 = fit2$dp
@@ -200,7 +206,7 @@ density c.hat via a two-dimensional KDE of (c)
 ``` r
 fhatZ = kde(x=Z.hat, H=Hscv(x=Z.hat))
 
-pdf("norm_flows_hist_plot.pdf", width=7, height=7)
+#pdf("norm_flows_hist_plot.pdf", width=7, height=7)
 #
 par(mfrow=c(2,2), cex.axis=1.2, cex.lab=1.2, cex.main=1.2)
 qqnorm(z1, datax=T, main="(a)") ; qqline(z1)
@@ -210,9 +216,9 @@ plot(fhatZ, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 90, 10),
      main="(d)", xlab=expression(hat(Z)[1]), ylab=expression(hat(Z)[2]), mgp = c(2.5, 1, 0)) 
 ```
 
-Figure 7: Pipleine date. Normal quantile plots (a) and (b), a
-scatterplot (c) and KDE density countours from the normal-transformed
-flows.
+![](readme_files/figure-gfm/example%20plot2-1.png)<!-- --> Figure 7:
+Pipeline date. Normal quantile plots (a) and (b), a scatterplot (c) and
+KDE density countours from the normal-transformed flows.
 
 ``` r
 options(digits=3)
@@ -287,13 +293,72 @@ cor.test(z1, z2, method="pearson")
 Table 1: Estimates of copula parameters, maximized log-likelihood, and
 AIC using the uniform-transfomred pipline flow data.
 
+Next: fitting the paramteric pseudo-maximum likelihood: Btw how lazy is
+this code in the text-book! .Last.value is such a hack.
+
 ``` r
+library(knitr)
 omega = -0.371
 
 options(digits=4)
 
 Ct = fitCopula(copula=tCopula(dim = 2), data=U.hat, method="ml", start=c(omega, 10)) 
-Ct@estimate
+#Ct@estimate
+mle_t = loglikCopula(param=Ct@estimate, U.hat, copula=tCopula(dim = 2))
+t_AIC = -2*mle_t + 2*length(Ct@estimate)
+#
+Cgauss = fitCopula(copula=normalCopula(dim = 2), data=U.hat, method="ml", start=c(omega)) 
+#Cgauss@estimate
+mle_g = loglikCopula(param=Cgauss@estimate, U.hat, copula=normalCopula(dim = 2))
+g_AIC = -2*mle_g + 2*length(Cgauss@estimate)
+# Not run
+Cgu = fitCopula(copula=gumbelCopula(2, dim=2), data=U.hat, method="ml")
 ```
 
-    ## [1] -0.3401 22.4414
+    ## Warning in .local(copula, tau, ...): For the Gumbel copula, tau must be >= 0.
+    ## Replacing negative values by 0.
+
+    ## Warning in fitCopula.ml(copula, u = data, method = method, start = start, :
+    ## optim(*, hessian=TRUE) failed: non-finite finite-difference value [1]
+
+``` r
+# Not run
+Cjoe = fitCopula(copula=joeCopula(2, dim=2), data=U.hat, method="ml")
+```
+
+    ## Warning in .local(copula, tau, ...): For the Joe copula, tau must be >= 0.
+    ## Replacing negative values by 0.
+
+    ## Warning in .local(copula, tau, ...): optim(*, hessian=TRUE) failed: non-finite
+    ## finite-difference value [1]
+
+``` r
+#
+Cfr = fitCopula(copula=frankCopula(1, dim=2), data=U.hat, method="ml")
+#Cfr@estimate
+mle_f = loglikCopula(param=Cfr@estimate, U.hat, copula=frankCopula(dim = 2))
+f_AIC = -2*mle_f + 2*length(Cfr@estimate)
+#
+Ccl = fitCopula(copula=claytonCopula(1, dim=2), data=U.hat, method="ml")
+#Ccl@estimate
+mle_c = loglikCopula(param=Ccl@estimate, U.hat, copula=claytonCopula(dim = 2))
+c_AIC = -2*mle_c + 2*length(Ccl@estimate)
+
+# Put the data in a dataframe:
+df <- data.frame(CopulaFamily=rep(c('t', 't', 'Gaussian', 'Frank', 'Clayton')),
+        estimates_hat=c(Ct@estimate[1], Ct@estimate[2], Cgauss@estimate,  Cfr@estimate,Ccl@estimate[1]),
+         maximized_ll=c(mle_t, '', mle_g, mle_f, mle_c),
+         AIC=c(t_AIC, '', g_AIC, f_AIC, c_AIC))
+print(df, digits = 2 )
+```
+
+    ##   CopulaFamily estimates_hat     maximized_ll               AIC
+    ## 1            t         -0.34 20.9827276503404 -37.9654553006808
+    ## 2            t         22.44                                   
+    ## 3     Gaussian         -0.33 20.3605696065537 -38.7211392131074
+    ## 4        Frank         -2.25 23.0677713000729 -44.1355426001458
+    ## 5      Clayton         -0.17 9.87084326445845 -17.7416865289169
+
+``` r
+#kbl(df)
+```

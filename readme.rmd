@@ -11,7 +11,30 @@ always_allow_html: yes
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<!-- https://latex.codecogs.com/svg.latex? -->
+
+A copula is a multivariate CDF whose univariate marginal distribution are all U(0,1).
+
+By Sklar's theorem: 
+$$
+F_Y(y_1,..,y_d) = C_Y(F_{Y_1}(y_1),..,F_{Y_d}(y_d))
+$$
+
 data and code from the book can be found here: https://people.orie.cornell.edu/davidr/SDAFE2/
+
+## Special copulas
+
+1. d-dimensional independent copula $C_0$ of $U(0,1)^d$ \
+2. co-monotonicity $C_+$ describes positive dependence and $C_+(u_1,..,u_d) = min(u1,..,u_d)$ \
+3. counter-monotonicity copula $C_-$ which has negative dependence and $C_-(u_1, u_2) = max(u_1, u_2) if d \leq 2$.
+If d > 2 then a lower bound for copulas: $max(u_1+..+u_d+1-d, 0) \leq c(u_1,..,u_d)$ \
+
+For Gaussian and t-copulas, let $\Omega$ be the correlation matrix: \
+1. $\Omega \rightarrow C_y$ is 1-1 to the Gauss copula   \
+2. $\Omega = \textbf{I} \rightarrow$ Meta-Gaussian distribution, which is the independent copula (1.) \
+3. $\Omega = \textbf{1} \rightarrow C_+$ \
+4. $\Omega = \textbf{-1} \rightarrow C_-$ \
+
 
 ## Archimedean Copulas
 
@@ -19,14 +42,23 @@ Archimedean copula with generator function:
 
 
 $$
-C(u_1,..,u_d) = \phi^{-1}(\phi(u_1)+..+\phi(u_d))
+C(u_1,..,u_d) = \varphi^{-1}(\varphi(u_1)+..+\varphi(u_d))
 $$
+
+Satisfies 3 axioms: \
+1. $\varphi$ is continuous, strictly increasing, and convex on $\varphi : [0,1] \rightarrow [0, \infty)$ \
+2. $\varphi(0) = \infty$ \
+3. $\varphi(1) = 1$ \
+
 #### Frank copula
 
 Generator function:
 $$
 C(u|\theta) = -ln(\frac{e^{-\theta u} -1)}{e^{-\theta} -1)}), -\infty < \theta < \infty
 $$
+$\theta \rightarrow 0 \implies c(u_1, u_2) \rightarrow C_0$ \
+$\theta \rightarrow \infty \implies c(u_1, u_2) \rightarrow C_+$ \
+$\theta \rightarrow -\infty \implies c(u_1, u_2) \rightarrow C_-$ \
 
 #### Crayton copula
 
@@ -34,18 +66,37 @@ Generator function:
 $$
 C(u|\theta) = \frac{1}{\theta}(u^{-\theta}-1), \theta > 0
 $$
+$\theta \rightarrow 0 \implies c(u) \rightarrow C_0$ \
+$\theta \rightarrow \infty \implies c(u_1, u_2) \rightarrow C_+$ \
+$\theta \rightarrow -1 \implies c(u_1, u_2) \rightarrow C_-$ \
+
+
 #### Gumbel Copula adsfads
 
 Generator function:
 $$
 C(u|\theta) = -ln(u)^{\theta}, \theta \geq 1
 $$
+
+$\theta = 1 \implies c(u) \rightarrow C_0$ \
+$\theta \rightarrow \infty \implies c(u_1, u_2) \rightarrow C_+$ \
+
+
+
+
 #### Joe copula
 
 Generator function:
 $$
 C(u|\theta) = -ln(1-(1-\theta)^{\theta}), \theta \geq 1
 $$
+
+$\theta =1  \implies c(u) \rightarrow C_0$ \
+$\theta \rightarrow \infty \implies c(u_1, u_2) \rightarrow C_+$ \
+
+Joe copula is similar to Gumbel. It cannot have negative dependence. It allows stronger upper tail
+dependence and is closer to being a reverse Clayton copula in the positive dependence case.
+is closer to a reverse Clayton copula.
 
 ### Plot of generator function for Frank cupola
 
@@ -60,7 +111,7 @@ abline(v=0)
 
 ### Scatter plot of 9 bivariate Frank copulas
 
-```{r Scatterplot of 9 frank copulas}
+```{r Scatterplot of 9 frank copulas, message=FALSE}
 set.seed(5640)
 theta = c(-100, -50, -10, -1, 0, 5, 20, 50, 500)
 par(mfrow=c(3,3), cex.axis=1.2, cex.lab=1.2, cex.main=1.2)
@@ -71,7 +122,7 @@ for(i in 1:9){
                          list(j = as.character(theta[i])))))
 }
 ```
-\center Figure 2: Bivariate random samples of size 200 from various Frank copulas. \center
+_Figure 2: Bivariate random samples of size 200 from various Frank copulas._
 
 ### Scatter plot of 9 bivariate Clayton copulas
 ```{r Scatterplot of 9 clayton copulas, echo=FALSE}
@@ -85,7 +136,7 @@ for(i in 1:9){
                          list(j = as.character(theta[i])))))
 }
 ```
-\center Figure 3: Bivariate random samples of size 200 from various clayton copulas. \center
+_Figure 3: Bivariate random samples of size 200 from various clayton copulas.-
 
 
 
@@ -101,7 +152,7 @@ for(i in 1:6){
                          list(j = as.character(theta[i])))))
 }
 ```
-\center Figure 4: Bivariate random samples of size 200 from various gumbel copulas. \center
+_Figure 4: Bivariate random samples of size 200 from various gumbel copulas._
 
 ### Scatter plot of 6 bivariate Joe copulas
 ```{r Scatterplot of 9 joe copulas, echo=FALSE}
@@ -115,7 +166,7 @@ for(i in 1:6){
                          list(j = as.character(theta[i])))))
 }
 ```
-\center Figure 4: Bivariate random samples of size 200 from various joe copulas. \center
+_Figure 5: Bivariate random samples of size 200 from various joe copulas._
 
 ## Rank correlation: 1. Kendall's Tau, 2. Spearman's rank correlation coefficient
 
@@ -180,9 +231,9 @@ plot(fhatU, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 80, 10),
      main="(d)", xlab=expression(hat(U)[1]), ylab=expression(hat(U)[2]), mgp = c(2.5, 1, 0)) 
 
 ```
-Figure 6: Pipeline data. Density histograms (a), and (b) and a scatterplot (c) of the 
+-Figure 6: Pipeline data. Density histograms (a), and (b) and a scatterplot (c) of the 
 uniform-transformed flows. The empirical copula C.hat, is the empirical CDF of the  data in (c).
-Contours (d) from an estimated copula density c.hat via a two-dimensional KDE of (c)  
+Contours (d) from an estimated copula density c.hat via a two-dimensional KDE of (c)_
 
 ```{r example plot2}
 
@@ -197,8 +248,8 @@ plot(z1, z2, main="(c)", xlab = expression(hat(Z)[1]), ylab = expression(hat(Z)[
 plot(fhatZ, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 90, 10), 
      main="(d)", xlab=expression(hat(Z)[1]), ylab=expression(hat(Z)[2]), mgp = c(2.5, 1, 0)) 
 ```
-Figure 7: Pipeline date. Normal quantile plots (a) and (b), a scatterplot (c) and KDE density countours 
-from the normal-transformed flows.
+_Figure 7: Pipeline date. Normal quantile plots (a) and (b), a scatterplot (c) and KDE density countours 
+from the normal-transformed flows._
 
 ```{r example table}
 options(digits=3)
@@ -208,13 +259,14 @@ sin(-0.242*pi/2)
 cor.test(u1, u2, method="pearson")
 cor.test(z1, z2, method="pearson")
 ```
-Table 1: Estimates of copula parameters, maximized log-likelihood, and AIC using the uniform-transfomred pipline 
-flow data.
+_Table 1: Estimates of copula parameters, maximized log-likelihood, and AIC using the uniform-transfomred pipline 
+flow data._
 
 
 Next: fitting the paramteric pseudo-maximum likelihood: Btw how lazy is this code in the text-book! .Last.value is such a hack. 
 ```{r example table2}
 library(knitr)
+library(kableExtra)
 omega = -0.371
 
 options(digits=4)
@@ -244,12 +296,15 @@ mle_c = loglikCopula(param=Ccl@estimate, U.hat, copula=claytonCopula(dim = 2))
 c_AIC = -2*mle_c + 2*length(Ccl@estimate)
 
 # Put the data in a dataframe:
-df <- data.frame(CopulaFamily=rep(c('t', 't', 'Gaussian', 'Frank', 'Clayton')),
-        estimates_hat=c(Ct@estimate[1], Ct@estimate[2], Cgauss@estimate,  Cfr@estimate,Ccl@estimate[1]),
-         maximized_ll=c(mle_t, '', mle_g, mle_f, mle_c),
-         AIC=c(t_AIC, '', g_AIC, f_AIC, c_AIC))
-print(df, digits = 2 )
-#kbl(df)
+df <- data.frame(CopulaFamily=c('t', '', 'Gaussian', 'Frank', 'Clayton'),
+        variable=c("t.hat", "v.hat", "p.hat", "theta.hat","theta.hat"),
+        estimates=c(Ct@estimate[1], Ct@estimate[2], Cgauss@estimate,  Cfr@estimate,Ccl@estimate[1]),
+         maximized_ll=c(mle_t, "", mle_g, mle_f, mle_c),
+         AIC=c(t_AIC, "", g_AIC, f_AIC, c_AIC))
+
+df$maximized_ll <- as.numeric(df$maximized_ll)
+df$AIC <- as.numeric(df$AIC)
+kbl(df, digits=2)
 ```
 
 

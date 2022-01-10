@@ -2,18 +2,70 @@ Statatistics and Data Analysis for Financial Engineering - Chapter 8
 Copulas
 ================
 
+<!-- https://latex.codecogs.com/svg.latex? -->
+
+A copula is a multivariate CDF whose univariate marginal distribution
+are all U(0,1).
+
+By Sklar’s theorem:
+
+![
+F_Y(y_1,..,y_d) = C_Y(F\_{Y_1}(y_1),..,F\_{Y_d}(y_d))
+](https://latex.codecogs.com/png.latex?%0AF_Y%28y_1%2C..%2Cy_d%29%20%3D%20C_Y%28F_%7BY_1%7D%28y_1%29%2C..%2CF_%7BY_d%7D%28y_d%29%29%0A "
+F_Y(y_1,..,y_d) = C_Y(F_{Y_1}(y_1),..,F_{Y_d}(y_d))
+")
+
 data and code from the book can be found here:
 <https://people.orie.cornell.edu/davidr/SDAFE2/>
+
+## Special copulas
+
+1.  d-dimensional independent copula
+    ![C_0](https://latex.codecogs.com/png.latex?C_0 "C_0") of
+    ![U(0,1)^d](https://latex.codecogs.com/png.latex?U%280%2C1%29%5Ed "U(0,1)^d")  
+2.  co-monotonicity
+    ![C\_+](https://latex.codecogs.com/png.latex?C_%2B "C_+") describes
+    positive dependence and
+    ![C\_+(u_1,..,u_d) = min(u1,..,u_d)](https://latex.codecogs.com/png.latex?C_%2B%28u_1%2C..%2Cu_d%29%20%3D%20min%28u1%2C..%2Cu_d%29 "C_+(u_1,..,u_d) = min(u1,..,u_d)")  
+3.  counter-monotonicity copula
+    ![C\_-](https://latex.codecogs.com/png.latex?C_- "C_-") which has
+    negative dependence and
+    ![C\_-(u_1, u_2) = max(u_1, u_2) if d \\leq 2](https://latex.codecogs.com/png.latex?C_-%28u_1%2C%20u_2%29%20%3D%20max%28u_1%2C%20u_2%29%20if%20d%20%5Cleq%202 "C_-(u_1, u_2) = max(u_1, u_2) if d \leq 2").
+    If d > 2 then a lower bound for copulas:
+    ![max(u_1+..+u_d+1-d, 0) \\leq c(u_1,..,u_d)](https://latex.codecogs.com/png.latex?max%28u_1%2B..%2Bu_d%2B1-d%2C%200%29%20%5Cleq%20c%28u_1%2C..%2Cu_d%29 "max(u_1+..+u_d+1-d, 0) \leq c(u_1,..,u_d)")  
+
+For Gaussian and t-copulas, let
+![\\Omega](https://latex.codecogs.com/png.latex?%5COmega "\Omega") be
+the correlation matrix:  
+1.
+![\\Omega \\rightarrow C_y](https://latex.codecogs.com/png.latex?%5COmega%20%5Crightarrow%20C_y "\Omega \rightarrow C_y")
+is 1-1 to the Gauss copula  
+2.
+![\\Omega = \\textbf{I} \\rightarrow](https://latex.codecogs.com/png.latex?%5COmega%20%3D%20%5Ctextbf%7BI%7D%20%5Crightarrow "\Omega = \textbf{I} \rightarrow")
+Meta-Gaussian distribution, which is the independent copula (1.)  
+3.
+![\\Omega = \\textbf{1} \\rightarrow C\_+](https://latex.codecogs.com/png.latex?%5COmega%20%3D%20%5Ctextbf%7B1%7D%20%5Crightarrow%20C_%2B "\Omega = \textbf{1} \rightarrow C_+")  
+4.
+![\\Omega = \\textbf{-1} \\rightarrow C\_-](https://latex.codecogs.com/png.latex?%5COmega%20%3D%20%5Ctextbf%7B-1%7D%20%5Crightarrow%20C_- "\Omega = \textbf{-1} \rightarrow C_-")  
 
 ## Archimedean Copulas
 
 Archimedean copula with generator function:
 
 ![
-C(u_1,..,u_d) = \\phi^{-1}(\\phi(u_1)+..+\\phi(u_d))
-](https://latex.codecogs.com/png.latex?%0AC%28u_1%2C..%2Cu_d%29%20%3D%20%5Cphi%5E%7B-1%7D%28%5Cphi%28u_1%29%2B..%2B%5Cphi%28u_d%29%29%0A "
-C(u_1,..,u_d) = \phi^{-1}(\phi(u_1)+..+\phi(u_d))
+C(u_1,..,u_d) = \\varphi^{-1}(\\varphi(u_1)+..+\\varphi(u_d))
+](https://latex.codecogs.com/png.latex?%0AC%28u_1%2C..%2Cu_d%29%20%3D%20%5Cvarphi%5E%7B-1%7D%28%5Cvarphi%28u_1%29%2B..%2B%5Cvarphi%28u_d%29%29%0A "
+C(u_1,..,u_d) = \varphi^{-1}(\varphi(u_1)+..+\varphi(u_d))
 ")
+
+Satisfies 3 axioms:  
+1. ![\\varphi](https://latex.codecogs.com/png.latex?%5Cvarphi "\varphi")
+is continuous, strictly increasing, and convex on
+![\\varphi : \[0,1\] \\rightarrow \[0, \\infty)](https://latex.codecogs.com/png.latex?%5Cvarphi%20%3A%20%5B0%2C1%5D%20%5Crightarrow%20%5B0%2C%20%5Cinfty%29 "\varphi : [0,1] \rightarrow [0, \infty)")  
+2.
+![\\varphi(0) = \\infty](https://latex.codecogs.com/png.latex?%5Cvarphi%280%29%20%3D%20%5Cinfty "\varphi(0) = \infty")  
+3.
+![\\varphi(1) = 1](https://latex.codecogs.com/png.latex?%5Cvarphi%281%29%20%3D%201 "\varphi(1) = 1")  
 
 #### Frank copula
 
@@ -25,6 +77,10 @@ C(u\|\\theta) = -ln(\\frac{e^{-\\theta u} -1)}{e^{-\\theta} -1)}), -\\infty \< \
 C(u|\theta) = -ln(\frac{e^{-\theta u} -1)}{e^{-\theta} -1)}), -\infty < \theta < \infty
 ")
 
+![\\theta \\rightarrow 0 \\implies c(u_1, u_2) \\rightarrow C_0](https://latex.codecogs.com/png.latex?%5Ctheta%20%5Crightarrow%200%20%5Cimplies%20c%28u_1%2C%20u_2%29%20%5Crightarrow%20C_0 "\theta \rightarrow 0 \implies c(u_1, u_2) \rightarrow C_0")  
+![\\theta \\rightarrow \\infty \\implies c(u_1, u_2) \\rightarrow C\_+](https://latex.codecogs.com/png.latex?%5Ctheta%20%5Crightarrow%20%5Cinfty%20%5Cimplies%20c%28u_1%2C%20u_2%29%20%5Crightarrow%20C_%2B "\theta \rightarrow \infty \implies c(u_1, u_2) \rightarrow C_+")  
+![\\theta \\rightarrow -\\infty \\implies c(u_1, u_2) \\rightarrow C\_-](https://latex.codecogs.com/png.latex?%5Ctheta%20%5Crightarrow%20-%5Cinfty%20%5Cimplies%20c%28u_1%2C%20u_2%29%20%5Crightarrow%20C_- "\theta \rightarrow -\infty \implies c(u_1, u_2) \rightarrow C_-")  
+
 #### Crayton copula
 
 Generator function:
@@ -34,6 +90,10 @@ C(u\|\\theta) = \\frac{1}{\\theta}(u^{-\\theta}-1), \\theta > 0
 ](https://latex.codecogs.com/png.latex?%0AC%28u%7C%5Ctheta%29%20%3D%20%5Cfrac%7B1%7D%7B%5Ctheta%7D%28u%5E%7B-%5Ctheta%7D-1%29%2C%20%5Ctheta%20%3E%200%0A "
 C(u|\theta) = \frac{1}{\theta}(u^{-\theta}-1), \theta > 0
 ")
+
+![\\theta \\rightarrow 0 \\implies c(u) \\rightarrow C_0](https://latex.codecogs.com/png.latex?%5Ctheta%20%5Crightarrow%200%20%5Cimplies%20c%28u%29%20%5Crightarrow%20C_0 "\theta \rightarrow 0 \implies c(u) \rightarrow C_0")  
+![\\theta \\rightarrow \\infty \\implies c(u_1, u_2) \\rightarrow C\_+](https://latex.codecogs.com/png.latex?%5Ctheta%20%5Crightarrow%20%5Cinfty%20%5Cimplies%20c%28u_1%2C%20u_2%29%20%5Crightarrow%20C_%2B "\theta \rightarrow \infty \implies c(u_1, u_2) \rightarrow C_+")  
+![\\theta \\rightarrow -1 \\implies c(u_1, u_2) \\rightarrow C\_-](https://latex.codecogs.com/png.latex?%5Ctheta%20%5Crightarrow%20-1%20%5Cimplies%20c%28u_1%2C%20u_2%29%20%5Crightarrow%20C_- "\theta \rightarrow -1 \implies c(u_1, u_2) \rightarrow C_-")  
 
 #### Gumbel Copula adsfads
 
@@ -45,6 +105,9 @@ C(u\|\\theta) = -ln(u)^{\\theta}, \\theta \\geq 1
 C(u|\theta) = -ln(u)^{\theta}, \theta \geq 1
 ")
 
+![\\theta = 1 \\implies c(u) \\rightarrow C_0](https://latex.codecogs.com/png.latex?%5Ctheta%20%3D%201%20%5Cimplies%20c%28u%29%20%5Crightarrow%20C_0 "\theta = 1 \implies c(u) \rightarrow C_0")  
+![\\theta \\rightarrow \\infty \\implies c(u_1, u_2) \\rightarrow C\_+](https://latex.codecogs.com/png.latex?%5Ctheta%20%5Crightarrow%20%5Cinfty%20%5Cimplies%20c%28u_1%2C%20u_2%29%20%5Crightarrow%20C_%2B "\theta \rightarrow \infty \implies c(u_1, u_2) \rightarrow C_+")  
+
 #### Joe copula
 
 Generator function:
@@ -54,6 +117,14 @@ C(u\|\\theta) = -ln(1-(1-\\theta)^{\\theta}), \\theta \\geq 1
 ](https://latex.codecogs.com/png.latex?%0AC%28u%7C%5Ctheta%29%20%3D%20-ln%281-%281-%5Ctheta%29%5E%7B%5Ctheta%7D%29%2C%20%5Ctheta%20%5Cgeq%201%0A "
 C(u|\theta) = -ln(1-(1-\theta)^{\theta}), \theta \geq 1
 ")
+
+![\\theta =1 \\implies c(u) \\rightarrow C_0](https://latex.codecogs.com/png.latex?%5Ctheta%20%3D1%20%5Cimplies%20c%28u%29%20%5Crightarrow%20C_0 "\theta =1 \implies c(u) \rightarrow C_0")  
+![\\theta \\rightarrow \\infty \\implies c(u_1, u_2) \\rightarrow C\_+](https://latex.codecogs.com/png.latex?%5Ctheta%20%5Crightarrow%20%5Cinfty%20%5Cimplies%20c%28u_1%2C%20u_2%29%20%5Crightarrow%20C_%2B "\theta \rightarrow \infty \implies c(u_1, u_2) \rightarrow C_+")  
+
+Joe copula is similar to Gumbel. It cannot have negative dependence. It
+allows stronger upper tail dependence and is closer to being a reverse
+Clayton copula in the positive dependence case. is closer to a reverse
+Clayton copula.
 
 ### Plot of generator function for Frank cupola
 
@@ -82,28 +153,27 @@ for(i in 1:9){
 }
 ```
 
-    ## parameter at boundary ==> returning indepCopula()
-
 ![](readme_files/figure-gfm/Scatterplot%20of%209%20frank%20copulas-1.png)<!-- -->
-Figure 2: Bivariate random samples of size 200 from various Frank
-copulas.
+*Figure 2: Bivariate random samples of size 200 from various Frank
+copulas.*
 
 ### Scatter plot of 9 bivariate Clayton copulas
 
 ![](readme_files/figure-gfm/Scatterplot%20of%209%20clayton%20copulas-1.png)<!-- -->
-Figure 3: Bivariate random samples of size 200 from various clayton
-copulas.
+\_Figure 3: Bivariate random samples of size 200 from various clayton
+copulas.-
 
 ### Scatter plot of 6 bivariate Gumbel copulas
 
 ![](readme_files/figure-gfm/Scatterplot%20of%209%20gumbel%20copulas-1.png)<!-- -->
-Figure 4: Bivariate random samples of size 200 from various gumbel
-copulas.
+*Figure 4: Bivariate random samples of size 200 from various gumbel
+copulas.*
 
 ### Scatter plot of 6 bivariate Joe copulas
 
 ![](readme_files/figure-gfm/Scatterplot%20of%209%20joe%20copulas-1.png)<!-- -->
-Figure 4: Bivariate random samples of size 200 from various joe copulas.
+*Figure 5: Bivariate random samples of size 200 from various joe
+copulas.*
 
 ## Rank correlation: 1. Kendall’s Tau, 2. Spearman’s rank correlation coefficient
 
@@ -197,11 +267,11 @@ plot(fhatU, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 80, 10),
      main="(d)", xlab=expression(hat(U)[1]), ylab=expression(hat(U)[2]), mgp = c(2.5, 1, 0)) 
 ```
 
-![](readme_files/figure-gfm/example%20plot-1.png)<!-- --> Figure 6:
+![](readme_files/figure-gfm/example%20plot-1.png)<!-- --> -Figure 6:
 Pipeline data. Density histograms (a), and (b) and a scatterplot (c) of
 the uniform-transformed flows. The empirical copula C.hat, is the
 empirical CDF of the data in (c). Contours (d) from an estimated copula
-density c.hat via a two-dimensional KDE of (c)
+density c.hat via a two-dimensional KDE of (c)\_
 
 ``` r
 fhatZ = kde(x=Z.hat, H=Hscv(x=Z.hat))
@@ -216,9 +286,9 @@ plot(fhatZ, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 90, 10),
      main="(d)", xlab=expression(hat(Z)[1]), ylab=expression(hat(Z)[2]), mgp = c(2.5, 1, 0)) 
 ```
 
-![](readme_files/figure-gfm/example%20plot2-1.png)<!-- --> Figure 7:
+![](readme_files/figure-gfm/example%20plot2-1.png)<!-- --> *Figure 7:
 Pipeline date. Normal quantile plots (a) and (b), a scatterplot (c) and
-KDE density countours from the normal-transformed flows.
+KDE density countours from the normal-transformed flows.*
 
 ``` r
 options(digits=3)
@@ -290,14 +360,15 @@ cor.test(z1, z2, method="pearson")
     ##    cor 
     ## -0.335
 
-Table 1: Estimates of copula parameters, maximized log-likelihood, and
-AIC using the uniform-transfomred pipline flow data.
+*Table 1: Estimates of copula parameters, maximized log-likelihood, and
+AIC using the uniform-transfomred pipline flow data.*
 
 Next: fitting the paramteric pseudo-maximum likelihood: Btw how lazy is
 this code in the text-book! .Last.value is such a hack.
 
 ``` r
 library(knitr)
+library(kableExtra)
 omega = -0.371
 
 options(digits=4)
@@ -345,20 +416,121 @@ mle_c = loglikCopula(param=Ccl@estimate, U.hat, copula=claytonCopula(dim = 2))
 c_AIC = -2*mle_c + 2*length(Ccl@estimate)
 
 # Put the data in a dataframe:
-df <- data.frame(CopulaFamily=rep(c('t', 't', 'Gaussian', 'Frank', 'Clayton')),
-        estimates_hat=c(Ct@estimate[1], Ct@estimate[2], Cgauss@estimate,  Cfr@estimate,Ccl@estimate[1]),
-         maximized_ll=c(mle_t, '', mle_g, mle_f, mle_c),
-         AIC=c(t_AIC, '', g_AIC, f_AIC, c_AIC))
-print(df, digits = 2 )
+df <- data.frame(CopulaFamily=c('t', '', 'Gaussian', 'Frank', 'Clayton'),
+        variable=c("t.hat", "v.hat", "p.hat", "theta.hat","theta.hat"),
+        estimates=c(Ct@estimate[1], Ct@estimate[2], Cgauss@estimate,  Cfr@estimate,Ccl@estimate[1]),
+         maximized_ll=c(mle_t, "", mle_g, mle_f, mle_c),
+         AIC=c(t_AIC, "", g_AIC, f_AIC, c_AIC))
+
+df$maximized_ll <- as.numeric(df$maximized_ll)
+df$AIC <- as.numeric(df$AIC)
+kbl(df, digits=2)
 ```
 
-    ##   CopulaFamily estimates_hat     maximized_ll               AIC
-    ## 1            t         -0.34 20.9827276503404 -37.9654553006808
-    ## 2            t         22.44                                   
-    ## 3     Gaussian         -0.33 20.3605696065537 -38.7211392131074
-    ## 4        Frank         -2.25 23.0677713000729 -44.1355426001458
-    ## 5      Clayton         -0.17 9.87084326445845 -17.7416865289169
-
-``` r
-#kbl(df)
-```
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+CopulaFamily
+</th>
+<th style="text-align:left;">
+variable
+</th>
+<th style="text-align:right;">
+estimates
+</th>
+<th style="text-align:right;">
+maximized_ll
+</th>
+<th style="text-align:right;">
+AIC
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+t
+</td>
+<td style="text-align:left;">
+t.hat
+</td>
+<td style="text-align:right;">
+-0.34
+</td>
+<td style="text-align:right;">
+20.98
+</td>
+<td style="text-align:right;">
+-37.97
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+v.hat
+</td>
+<td style="text-align:right;">
+22.44
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gaussian
+</td>
+<td style="text-align:left;">
+p.hat
+</td>
+<td style="text-align:right;">
+-0.33
+</td>
+<td style="text-align:right;">
+20.36
+</td>
+<td style="text-align:right;">
+-38.72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Frank
+</td>
+<td style="text-align:left;">
+theta.hat
+</td>
+<td style="text-align:right;">
+-2.25
+</td>
+<td style="text-align:right;">
+23.07
+</td>
+<td style="text-align:right;">
+-44.14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Clayton
+</td>
+<td style="text-align:left;">
+theta.hat
+</td>
+<td style="text-align:right;">
+-0.17
+</td>
+<td style="text-align:right;">
+9.87
+</td>
+<td style="text-align:right;">
+-17.74
+</td>
+</tr>
+</tbody>
+</table>

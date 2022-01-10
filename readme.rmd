@@ -26,7 +26,7 @@ data and code from the book can be found here: https://people.orie.cornell.edu/d
 
 1. d-dimensional independent copula $C_0$ of $U(0,1)^d$ \
 2. co-monotonicity $C_+$ describes positive dependence and $C_+(u_1,..,u_d) = min(u1,..,u_d)$ \
-3. counter-monotonicity copula $C_-$ which has negative dependence and $C_-(u_1, u_2) = max(u_1, u_2) if d \leq 2$.
+3. counter-monotonicity copula $C_-$ which has negative dependence and $C_-(u_1, u_2) = max(u_1, u_2)$ if $d \leq 2$.
 If d > 2 then a lower bound for copulas: $max(u_1+..+u_d+1-d, 0) \leq c(u_1,..,u_d)$ \
 
 For Gaussian and t-copulas, let $\Omega$ be the correlation matrix: \
@@ -45,10 +45,10 @@ $$
 C(u_1,..,u_d) = \varphi^{-1}(\varphi(u_1)+..+\varphi(u_d))
 $$
 
-Satisfies 3 axioms: \
-1. $\varphi$ is continuous, strictly increasing, and convex on $\varphi : [0,1] \rightarrow [0, \infty)$ \
-2. $\varphi(0) = \infty$ \
-3. $\varphi(1) = 1$ \
+Satisfies 3 conditions: \
+1. $\varphi$ is continuous, strictly increasing, and convex on $\varphi : [0,1] \rightarrow [0, \infty)$ 
+2. and $\varphi(0) = \infty$ \
+3. and $\varphi(1) = 1$ \
 
 #### Frank copula
 

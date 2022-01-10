@@ -30,7 +30,9 @@ data and code from the book can be found here:
 3.  counter-monotonicity copula
     ![C\_-](https://latex.codecogs.com/png.latex?C_- "C_-") which has
     negative dependence and
-    ![C\_-(u_1, u_2) = max(u_1, u_2) if d \\leq 2](https://latex.codecogs.com/png.latex?C_-%28u_1%2C%20u_2%29%20%3D%20max%28u_1%2C%20u_2%29%20if%20d%20%5Cleq%202 "C_-(u_1, u_2) = max(u_1, u_2) if d \leq 2").
+    ![C\_-(u_1, u_2) = max(u_1, u_2)](https://latex.codecogs.com/png.latex?C_-%28u_1%2C%20u_2%29%20%3D%20max%28u_1%2C%20u_2%29 "C_-(u_1, u_2) = max(u_1, u_2)")
+    if
+    ![d \\leq 2](https://latex.codecogs.com/png.latex?d%20%5Cleq%202 "d \leq 2").
     If d > 2 then a lower bound for copulas:
     ![max(u_1+..+u_d+1-d, 0) \\leq c(u_1,..,u_d)](https://latex.codecogs.com/png.latex?max%28u_1%2B..%2Bu_d%2B1-d%2C%200%29%20%5Cleq%20c%28u_1%2C..%2Cu_d%29 "max(u_1+..+u_d+1-d, 0) \leq c(u_1,..,u_d)")  
 
@@ -61,10 +63,10 @@ C(u_1,..,u_d) = \varphi^{-1}(\varphi(u_1)+..+\varphi(u_d))
 Satisfies 3 axioms:  
 1. ![\\varphi](https://latex.codecogs.com/png.latex?%5Cvarphi "\varphi")
 is continuous, strictly increasing, and convex on
-![\\varphi : \[0,1\] \\rightarrow \[0, \\infty)](https://latex.codecogs.com/png.latex?%5Cvarphi%20%3A%20%5B0%2C1%5D%20%5Crightarrow%20%5B0%2C%20%5Cinfty%29 "\varphi : [0,1] \rightarrow [0, \infty)")  
-2.
+![\\varphi : \[0,1\] \\rightarrow \[0, \\infty)](https://latex.codecogs.com/png.latex?%5Cvarphi%20%3A%20%5B0%2C1%5D%20%5Crightarrow%20%5B0%2C%20%5Cinfty%29 "\varphi : [0,1] \rightarrow [0, \infty)")
+2. and
 ![\\varphi(0) = \\infty](https://latex.codecogs.com/png.latex?%5Cvarphi%280%29%20%3D%20%5Cinfty "\varphi(0) = \infty")  
-3.
+3. and
 ![\\varphi(1) = 1](https://latex.codecogs.com/png.latex?%5Cvarphi%281%29%20%3D%201 "\varphi(1) = 1")  
 
 #### Frank copula

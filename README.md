@@ -60,7 +60,7 @@ C(u_1,..,u_d) = \\varphi^{-1}(\\varphi(u_1)+..+\\varphi(u_d))
 C(u_1,..,u_d) = \varphi^{-1}(\varphi(u_1)+..+\varphi(u_d))
 ")
 
-Satisfies 3 axioms:  
+Satisfies 3 conditions:  
 1. ![\\varphi](https://latex.codecogs.com/png.latex?%5Cvarphi "\varphi")
 is continuous, strictly increasing, and convex on
 ![\\varphi : \[0,1\] \\rightarrow \[0, \\infty)](https://latex.codecogs.com/png.latex?%5Cvarphi%20%3A%20%5B0%2C1%5D%20%5Crightarrow%20%5B0%2C%20%5Cinfty%29 "\varphi : [0,1] \rightarrow [0, \infty)")
@@ -156,24 +156,28 @@ for(i in 1:9){
 ```
 
 ![](readme_files/figure-gfm/Scatterplot%20of%209%20frank%20copulas-1.png)<!-- -->
+
 *Figure 2: Bivariate random samples of size 200 from various Frank
 copulas.*
 
 ### Scatter plot of 9 bivariate Clayton copulas
 
 ![](readme_files/figure-gfm/Scatterplot%20of%209%20clayton%20copulas-1.png)<!-- -->
-\_Figure 3: Bivariate random samples of size 200 from various clayton
-copulas.-
+
+*Figure 3: Bivariate random samples of size 200 from various clayton
+copulas.*
 
 ### Scatter plot of 6 bivariate Gumbel copulas
 
 ![](readme_files/figure-gfm/Scatterplot%20of%209%20gumbel%20copulas-1.png)<!-- -->
+
 *Figure 4: Bivariate random samples of size 200 from various gumbel
 copulas.*
 
 ### Scatter plot of 6 bivariate Joe copulas
 
 ![](readme_files/figure-gfm/Scatterplot%20of%209%20joe%20copulas-1.png)<!-- -->
+
 *Figure 5: Bivariate random samples of size 200 from various joe
 copulas.*
 
@@ -202,29 +206,11 @@ legend("topleft", c( expression(nu==1), expression(nu=4), expression(nu==25), ex
 
 ![](readme_files/figure-gfm/Scatterplot-1.png)<!-- -->
 
-``` r
-getwd()
-```
-
-    ## [1] "C:/prosjekt/Statistics-and-Data-Analysis-for-Financial-Engineering-Copulas"
-
 ## Example: flows in pipeline
 
 ``` r
 library(copula)
 library(sn)
-```
-
-    ## Loading required package: stats4
-
-    ## 
-    ## Attaching package: 'sn'
-
-    ## The following object is masked from 'package:stats':
-    ## 
-    ##     sd
-
-``` r
 dat = read.csv("datasets/FlowData.csv")
 dat = dat/10000
 n = nrow(dat)
@@ -244,24 +230,8 @@ Z.hat = cbind(z1,z2)
 
 ``` r
 library(ks) 
-```
-
-    ## 
-    ## Attaching package: 'ks'
-
-    ## The following object is masked from 'package:sn':
-    ## 
-    ##     vech
-
-``` r
 fhatU = kde(x=U.hat, H=Hscv(x=U.hat))
-par(mfrow=c(2,2), cex.axis=1.2, cex.lab=1.2, cex.max=1.2)
-```
-
-    ## Warning in par(mfrow = c(2, 2), cex.axis = 1.2, cex.lab = 1.2, cex.max = 1.2):
-    ## "cex.max" is not a graphical parameter
-
-``` r
+par(mfrow=c(2,2), cex.axis=1.2, cex.lab=1.2) #, cex.max=1.2
 hist(u1, main="(a)", xlab=expression(hat(U)[1]), freq=FALSE)
 hist(u1, main="(b)", xlab=expression(hat(U)[2]), freq=FALSE)
 plot(u1, u2, main="(c)", xlab = expression(hat(U)[1]), ylab = expression(hat(U)[2]), mgp = c(2.5, 1, 0))
@@ -269,11 +239,12 @@ plot(fhatU, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 80, 10),
      main="(d)", xlab=expression(hat(U)[1]), ylab=expression(hat(U)[2]), mgp = c(2.5, 1, 0)) 
 ```
 
-![](readme_files/figure-gfm/example%20plot-1.png)<!-- --> -Figure 6:
-Pipeline data. Density histograms (a), and (b) and a scatterplot (c) of
-the uniform-transformed flows. The empirical copula C.hat, is the
-empirical CDF of the data in (c). Contours (d) from an estimated copula
-density c.hat via a two-dimensional KDE of (c)\_
+![](readme_files/figure-gfm/example%20plot-1.png)<!-- -->
+
+*Figure 6: Pipeline data. Density histograms (a), and (b) and a
+scatterplot (c) of the uniform-transformed flows. The empirical copula
+C.hat, is the empirical CDF of the data in (c). Contours (d) from an
+estimated copula density c.hat via a two-dimensional KDE of (c)*
 
 ``` r
 fhatZ = kde(x=Z.hat, H=Hscv(x=Z.hat))
@@ -288,9 +259,11 @@ plot(fhatZ, drawpoints=FALSE, drawlabels=FALSE, cont=seq(10, 90, 10),
      main="(d)", xlab=expression(hat(Z)[1]), ylab=expression(hat(Z)[2]), mgp = c(2.5, 1, 0)) 
 ```
 
-![](readme_files/figure-gfm/example%20plot2-1.png)<!-- --> *Figure 7:
-Pipeline date. Normal quantile plots (a) and (b), a scatterplot (c) and
-KDE density countours from the normal-transformed flows.*
+![](readme_files/figure-gfm/example%20plot2-1.png)<!-- -->
+
+*Figure 7: Pipeline date. Normal quantile plots (a) and (b), a
+scatterplot (c) and KDE density countours from the normal-transformed
+flows.*
 
 ``` r
 options(digits=3)

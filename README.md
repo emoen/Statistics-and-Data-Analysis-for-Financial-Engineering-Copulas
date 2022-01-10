@@ -18,6 +18,8 @@ F_Y(y_1,..,y_d) = C_Y(F_{Y_1}(y_1),..,F_{Y_d}(y_d))
 data and code from the book can be found here:
 <https://people.orie.cornell.edu/davidr/SDAFE2/>
 
+Solution to [R-lab](/excersise.md), \[exercises\]
+
 ## Special copulas
 
 1.  d-dimensional independent copula

@@ -1,0 +1,10 @@
+---
+title: "Statatistics and Data Analysis for Financial Engineering - Chapter 8 Copulas"
+output:
+  github_document:
+    pandoc_args: --webtex
+always_allow_html: yes
+
+---
+
+excersises

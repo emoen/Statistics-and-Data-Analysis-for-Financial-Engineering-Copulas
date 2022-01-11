@@ -296,5 +296,15 @@ contour(kde2d(data1[,1],data1[,2]), col = 2, add = TRUE)
 
 ```
 
+(a) Do you see any difference between the parametric estimates of the copula density? If so, which seem closest
+to the KDE? 
+
+### Problem 9
+
+(a) Find AIC for t, gauss, frank, clayton, gumbel and joe copulas. Which copula models fit best by AIC? 
+Hint: the fitCopula() returns log-likelihood.
+
+
+
 ``` {r}
 ```

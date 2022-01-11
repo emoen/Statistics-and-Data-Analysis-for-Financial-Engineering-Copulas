@@ -176,7 +176,7 @@ A: They look Beta distributed. Expected values: 0.5, 0.34, 0.25
 A: The scatterplots would have been uniformly distributed if they where
 independent, which they are not.   
 
-### Problem 4: Fitting Copula Models to Bivariate Return Data - IBM and S&P 500
+### Problem 4: Fitting Copula Models to Bivariate Return Data - IBM and S&P 500 - kendalls tau
 
 ``` r
 # Data download 9/9/2014
@@ -187,7 +187,6 @@ independent, which they are not. 
 # colnames(netReturns) = c("IBM", "SP500") ; colnames(netReturns)
 # head(netReturns) ; tail(netReturns)
 # write.zoo(netReturns,"IBM_SP500_04_14_daily_netRtns.csv", index.name="Date", sep=",")
-
 
 library(MASS)     #  for fitdistr() and kde2d() functions
 library(copula)   #  for copula functions
@@ -209,12 +208,7 @@ print(cor_tau)
 
 ``` r
 omega = sin((pi/2)*cor_tau) #0.5 ######### need to get correct value   
-print(omega)
-```
 
-    ## [1] 0.7018346
-
-``` r
 cop_t_dim2 = tCopula(omega, dim = 2, dispstr = "un", df = 4)
 
 data1 = cbind(pstd(ibm, est.ibm[1], est.ibm[2], est.ibm[3]), 
@@ -232,6 +226,186 @@ ft2 = fitCopula(cop_t_dim2, data2, method="ml", start=c(omega,4) )
 
 Q: Find value for Omega.
 
-A: omega = sin((pi/2)\*cor_tau) = 0.72
+A: omega = sin((pi/2)\*cor_tau) = 0.7018346
 
-### Problem 5 -
+### Problem 5 - Spearmans rank correlation
+
+1.  Explain the difference between ft1 and ft2
+
+A: Both fits are by pseudo-likelihood. ft1 is the parametric approach
+because the univariate marginal distributions are estimated by fitting
+t-distributions, and ft2 is the nonparametric approach because the
+univariate distributions are estimated by empirical CDFs.
+
+2.  Do the two estimates seeem significatly different?
+
+A The two estimates of the correlation are 0.7022 and 0.7031. The two
+estimates of the degrees of freedom are 2.98 and 3.02. Thus, the two
+estimates of the copula are quite similar with no significant practical
+difference. Notice also that the two estimates of the correlation are
+similar to the estimate, 0.7018, in Problem 3 that used Kendall’s tau
+
+### problem 6:
+
+``` r
+mvdc_t_t = mvdc( cop_t_dim2, c("std","std"), list(
+           list(mean=est.ibm[1],sd=est.ibm[2],nu=est.ibm[3]),
+           list(mean=est.sp500[1],sd=est.sp500[2],nu=est.sp500[3])))
+
+
+# Will run for 1. minute or more
+#fit_cop = fitMvdc(cbind(ibm,sp500),mvdc_t_t,start=c(ft1@estimate,est.ibm,est.sp500), hideWarnings=FALSE)
+#print(fit_cop)
+
+start = c(est.ibm, est.sp500, ft1@estimate)
+objFn = function(param) -loglikMvdc(param,cbind(ibm,sp500),mvdc_t_t)
+tic = proc.time()
+ft = optim(start, objFn, method="L-BFGS-B",
+           lower = c(-.1,0.001,2.2, -0.1,0.001,2.2,  0.2,2.5),
+           upper = c( .1,   10, 15,  0.1,   10, 15,  0.9, 15) )
+toc = proc.time()
+total_time = toc - tic ; total_time[3]/60
+```
+
+    ##   elapsed 
+    ## 0.6608333
+
+``` r
+print(total_time)
+```
+
+    ##    user  system elapsed 
+    ##   38.71    0.04   39.65
+
+``` r
+print(ft)
+```
+
+    ## $par
+    ## [1] 0.06504701 1.37982781 3.35792653 0.07422142 1.80751161 2.33415929 0.70421613
+    ## [8] 2.96934977
+    ## 
+    ## $value
+    ## [1] 6828.219
+    ## 
+    ## $counts
+    ## function gradient 
+    ##       64       64 
+    ## 
+    ## $convergence
+    ## [1] 0
+    ## 
+    ## $message
+    ## [1] "CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+
+Lower and upper bounds are used to constrain the algorithm to search
+where log-likeliehood is defined and finite. FitMvdc() does not allow to
+define lower and upper bound and did not converge on this problem.
+
+1.  What are the estimates of the copula parameters in fit_cop?
+
+A:
+
+> fit_cop = fitMvdc(cbind(ibm,sp500),mvdc_t_t,start=c(ft1@estimate,est.ibm,est.sp500), hideWarnings=FALSE) 
+Error in optim(start, loglikMvdc, mvdc = mvdc, x = data, method = method,  : 
+  initial value in 'vmmin' is not finite
+In addition: Warning messages:
+1: In sqrt(nu/(nu - 2)) : NaNs produced
+2: In sqrt(nu/(nu - 2)) : NaNs produced
+3: In sqrt(nu/(nu - 2)) : NaNs produced
+4: In sqrt(nu/(nu - 2)) : NaNs produced
+
+2.  What are the estimates of the parameters in the univariate marginal
+    distribution?
+
+A:
+
+3.  Was the estimation method maximum likelihood, semiparametric pseudo
+    ml, or parametric pseudo-ml?
+
+4.  Estimate the coefficient of lower tail dependence for this copula.
+
+### Problem 7:
+
+``` r
+fnorm = fitCopula(copula = normalCopula(dim=2), data=data1, method="ml" ) 
+ffrank = fitCopula(copula = frankCopula(3, dim = 2), data = data1, method = "ml" )
+fclayton = fitCopula(copula = claytonCopula(1, dim=2), data = data1, method = "ml" ) 
+fgumbel = fitCopula(copula = gumbelCopula(3, dim=2), data = data1, method = "ml" ) 
+fjoe = fitCopula(copula=joeCopula(2,dim=2),data=data1,method="ml" ) 
+```
+
+The estimated copulas (CDFs) will be compared with the empirical copulas
+
+``` r
+Udex = (1:n)/(n+1)
+
+#Cn: The Empirical Copula
+tmp_u = cbind(rep(Udex,n),rep(Udex,each=n))
+#Cn = C.n(u=tmp_u, U=data1, method="C")
+Cn = C.n(tmp_u, data1)
+
+EmpCop = expression(contour(Udex, Udex, matrix(Cn, n, n), col = 2, add = TRUE))
+par(mfrow=c(2,3))
+contour(tCopula(param=ft$par[7],dim=2,df=round(ft$par[8])), 
+        pCopula, main = expression(hat(C)[t]), mgp = c(2.5,1,0), 
+        xlab = expression(hat(U)[1]), ylab = expression(hat(U)[2]) )
+eval(EmpCop)
+contour(normalCopula(param=fnorm@estimate[1], dim = 2), 
+        pCopula, main = expression(hat(C)[Gauss]), mgp = c(2.5,1,0),
+        xlab = expression(hat(U)[1]), ylab = expression(hat(U)[2]) )
+eval(EmpCop)
+contour(frankCopula(param=ffrank@estimate[1], dim = 2), 
+        pCopula, main = expression(hat(C)[Fr]), mgp = c(2.5,1,0),
+        xlab = expression(hat(U)[1]), ylab = expression(hat(U)[2]) )
+eval(EmpCop)
+contour(claytonCopula(param=fclayton@estimate[1], dim = 2), 
+        pCopula, main = expression(hat(C)[Cl]), mgp = c(2.5,1,0),
+        xlab = expression(hat(U)[1]), ylab = expression(hat(U)[2]) )
+eval(EmpCop)
+contour(gumbelCopula(param=fgumbel@estimate[1], dim = 2), 
+        pCopula, main = expression(hat(C)[Gu]), mgp = c(2.5,1,0),
+        xlab = expression(hat(U)[1]), ylab = expression(hat(U)[2]) )
+eval(EmpCop)
+contour(joeCopula(param=fjoe@estimate[1], dim = 2), 
+        pCopula, main = expression(hat(C)[Joe]), mgp = c(2.5,1,0),
+        xlab = expression(hat(U)[1]), ylab = expression(hat(U)[2]) )
+eval(EmpCop)
+```
+
+![](excersise_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+### Problem 8
+
+A 2-d KDE of the copulas density will be compared with the parametric
+density estimate (PDFs)
+
+``` r
+par(mfrow=c(2,3))
+contour(tCopula(param=ft$par[7],dim=2,df=round(ft$par[8])),
+        dCopula, main = expression(hat(c)[t]), mgp = c(2.5,1,0), 
+  nlevels=25, xlab=expression(hat(U)[1]),ylab=expression(hat(U)[2]))
+contour(kde2d(data1[,1],data1[,2]), col = 2, add = TRUE)
+contour(normalCopula(param=fnorm@estimate[1], dim = 2), 
+        dCopula, main = expression(hat(c)[Gauss]), mgp = c(2.5,1,0),
+  nlevels=25, xlab=expression(hat(U)[1]),ylab=expression(hat(U)[2]))
+contour(kde2d(data1[,1],data1[,2]), col = 2, add = TRUE)
+contour(frankCopula(param=ffrank@estimate[1], dim = 2), 
+        dCopula, main = expression(hat(c)[Fr]), mgp = c(2.5,1,0),
+  nlevels=25, xlab=expression(hat(U)[1]),ylab=expression(hat(U)[2]))
+contour(kde2d(data1[,1],data1[,2]), col = 2, add = TRUE)
+contour(claytonCopula(param=fclayton@estimate[1], dim = 2), 
+        dCopula, main = expression(hat(c)[Cl]), mgp = c(2.5,1,0),
+  nlevels=25, xlab=expression(hat(U)[1]),ylab=expression(hat(U)[2]))
+contour(kde2d(data1[,1],data1[,2]), col = 2, add = TRUE)
+contour(gumbelCopula(param=fgumbel@estimate[1], dim = 2), 
+        dCopula, main = expression(hat(c)[Gu]), mgp = c(2.5,1,0),
+  nlevels=25, xlab=expression(hat(U)[1]),ylab=expression(hat(U)[2]))
+contour(kde2d(data1[,1],data1[,2]), col = 2, add = TRUE)
+contour(joeCopula(param=fjoe@estimate[1], dim = 2), 
+        dCopula, main = expression(hat(c)[Joe]), mgp = c(2.5,1,0),
+  nlevels=25, xlab=expression(hat(U)[1]),ylab=expression(hat(U)[2]))
+contour(kde2d(data1[,1],data1[,2]), col = 2, add = TRUE)
+```
+
+![](excersise_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->

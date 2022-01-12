@@ -23,7 +23,7 @@ $$
 data and code from the book can be found here: [https://people.orie.cornell.edu/davidr/SDAFE2/](https://people.orie.cornell.edu/davidr/SDAFE2/) 
 - which has numerous errors running on R version 4.1.2 (2021-11-01) 
 
-Solution to [R-lab](/excersise.md)
+Solution to [R-lab, and exercises](/exercises.md)
 
 ## Special copulas
 

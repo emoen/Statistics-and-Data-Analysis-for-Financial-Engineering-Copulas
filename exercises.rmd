@@ -308,3 +308,43 @@ Hint: the fitCopula() returns log-likelihood.
 
 ``` {r}
 ```
+
+
+## Exercises
+
+1. Kedalls tau rank correlation between X, and Y is 0.55. Both X and Y are positive. What is kendalls tau between X and 1/Y?
+What is kendalls tau between 1/X and 1/Y?
+
+A:  A monotonically strictly decreasing transformation of one variable will change
+concordant pairs to discordant pairs and vice versa, so it will change the sign
+but not the magnitude of Kendall’s tau.
+Since Y → 1/Y is monotonicity strictly decreasing, Kendall’s tau between X
+and 1/Y is −0.55 and Kendall’s tau between 1/X and 1/Y is 0.55.
+
+2. Suppose that X is U(0,1) and Y=X^2. Then the Spearman rank correlation and Kendalls tau between X and Y
+will both equal 1, but the Pearson correlation between X and Y will be les than 1. Why?
+
+A:
+
+3. Show that Archimedean copula with generator function $\varphi(u) ) = -ln(u)$ is equal
+to the independenct copula $C_0$. Does the same hold when the natural logarithm is replaced by the common logarithm?
+
+A:
+
+4. 
+
+...
+
+10. Suppose $Y=(Y_1,..,Y_d)$ has the meta-Gauss distribution with continous marginal distribution and copula
+$C_gauss(.|\omega)$. Show that $\rho(Y_i,Y_j)$=0 then $Y_i$ and $Y_j$ are independent.
+
+A: By (8.27), $\omega_{j,k} = sin(0) = 0$, so the copula of (Y_j, Y_k)$ is the copula of a bivariate Gaussian distribution with correlation matrix equal to the identity matrix.
+This distribution has independent components so the copula of $(Y_j, Y_k)$ is the
+independence copula with density identically equal to 1, that is, $c_Y(y_j, y_k) = 1$.
+Therefore, the components of Y are independent, because, for example, (8.4) implies that
+
+$$f_Y(y_j, y_k) = c_Y( F_Y_j(y_j), F_Y_k(y_k)}f_Y_j(y_j),f_Y_k(y_k) ) = f_Y_j(y_j)f_Y_k(y_k)$$
+
+which shows that $Y_j$ and $Y_k$ are independent.
+
+

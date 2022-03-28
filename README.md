@@ -512,3 +512,5 @@ theta.hat
 </tr>
 </tbody>
 </table>
+
+Introduction to copulas (Part 1) https://medium.com/@financialnoob/introduction-to-copulas-part-1-2ccbc5373d2e
